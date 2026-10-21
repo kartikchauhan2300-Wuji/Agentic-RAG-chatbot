@@ -1,0 +1,21 @@
+question,answerable,expected_pages,vec_hit,bm25_hit,merged_hit,rerank_hit,final_hit,first_rank,best_rerank_score,n_returned,refused,seconds
+What are the core components of RAG?,True,[3],True,True,True,True,True,1,0.997,4,False,23.0
+What is Naive RAG?,True,[4],True,True,True,True,True,1,0.964,4,False,11.1
+What is Advanced RAG?,True,[4],False,True,True,True,True,1,0.925,4,False,11.1
+What is Modular RAG?,True,[5],True,True,True,True,True,1,0.981,4,False,12.4
+Provide an example of Contextual integration.,True,[7],False,True,True,True,True,1,0.126,4,False,14.6
+Personalized content task type is evaluated with which dataset?,True,[37],True,True,True,True,True,1,0.254,4,False,12.0
+Biography task type category is tested with which dataset?,True,[37],True,True,True,True,True,1,0.846,4,False,11.8
+Translation tasks task type is evaluated with which dataset?,True,[37],True,True,True,True,True,2,0.895,4,False,11.8
+With the help of which dataset is Programming search task type evaluated?,True,[37],True,True,True,True,True,2,0.866,4,False,12.0
+Which dataset is used in evaluating Math reasoning task type?,True,[37],True,True,True,True,True,2,0.814,4,False,12.2
+What is the difference between Graph RAG and Modular RAG?,True,"[5, 6]",True,True,True,True,True,1,0.819,4,False,11.9
+Compare the differences between Parallelization and orchestration-worker workflow.,True,[13],True,True,True,True,True,1,0.949,4,False,11.9
+Compare the Key features and advantages of Single Agentic RAG against Multi-Agentic RAG.,True,"[15, 17]",False,False,False,False,False,,0.984,4,False,11.9
+Compare the workflow of Adaptive Agentic RAG to the workflow of Multi-Agentic RAG.,True,"[21, 17]",False,True,True,False,False,,0.984,4,False,12.2
+Compare the difference between Langchain and Langgraph,False,[31],,,,,,,0.993,4,False,11.9
+What is the capital of france?,False,[],,,,,,,0.01,4,False,11.8
+What is the weather in France right now?,False,[],,,,,,,0.0,4,False,11.7
+Who is the current prime minister of India,False,[],,,,,,,0.095,4,False,12.1
+What is the name of the cursed technique of sukuna?,False,[],,,,,,,0.0,4,False,12.1
+What is the capital of Pakistan?,False,[],,,,,,,0.001,4,False,12.5

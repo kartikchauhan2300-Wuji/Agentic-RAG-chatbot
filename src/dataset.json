@@ -1,0 +1,143 @@
+[
+  {
+    "question": "What are the core components of RAG?",
+    "expected_route": "qa",
+    "expected_pages": [3],
+    "answerable": true,
+    "reference": "The core components of RAG are Retrieval, Augmentation and Generation."
+  },
+  {
+    "question": "What is Naive RAG?",
+    "expected_route": "qa",
+    "expected_pages": [4],
+    "answerable": true,
+    "reference": "Naive RAG represents the foundational implementations of retrieval-augmented generation. These systems rely on simple keyword-based retrieval techniques."
+
+  },
+  {
+    "question": "What is Advanced RAG?",
+    "expected_route": "qa",
+    "expected_pages": [4],
+    "answerable": true,
+    "reference": "It builds upon the limitations of Naive RAG by incorporating semantic understanding and standard retrieval techniques."
+  },
+  {
+    "question": "What is Modular RAG?",
+    "expected_route": "qa",
+    "expected_pages": [5],
+    "answerable": true,
+    "reference": "Modular RAG emphasizes the latest evolutions in RAG paradigms, emphasizing flexibility and customization, these systems decompose the retrieval and generation pipeline into independent and reusable components."
+  },
+  {
+    "question": "Provide an example of Contextual integration.",
+    "expected_route": "qa",
+    "expected_pages": [7],
+    "answerable": true,
+    "reference": "A query such as,'What are the latest advancements in Alzheimer's research and their implications for early stage treatment.'"
+  },
+  {
+    "question": "Personalized content task type is evaluated with which dataset?",
+    "expected_route": "extract",
+    "expected_pages": [37],
+    "answerable": true,
+    "reference": "Amazon datasets"
+  },
+  {
+    "question": "Biography task type category is tested with which dataset?",
+    "expected_route": "extract",
+    "expected_pages": [37],
+    "answerable": true,
+    "reference": "Biography dataset"
+  },
+  {
+    "question": "Translation tasks task type is evaluated with which dataset?",
+    "expected_route": "extract",
+    "expected_pages": [37],
+    "answerable": true,
+    "reference": "JRC-Acquits"
+  },
+  {
+    "question": "With the help of which dataset is Programming search task type evaluated?",
+    "expected_route": "extract",
+    "expected_pages": [37],
+    "answerable": true,
+    "reference": "CodeSearchNet"
+  },
+  {
+    "question": "Which dataset is used in evaluating Math reasoning task type?",
+    "expected_route": "extract",
+    "expected_pages": [37],
+    "answerable": true,
+    "reference": "GSM8K"
+  },
+  {
+    "question": "What is the difference between Graph RAG and Modular RAG?",
+    "expected_route": "compare",
+    "expected_pages": [5, 6],
+    "answerable": true,
+    "reference": "Modular RAG emphasizes flexibility and customization by decomposing the retrieval and generation pipeline into independent and reusable components, whereas Graph RAG integrate graph-based data structures and leverage the  relationships withing graph data to enhance multi-hop reasoning and contextual enrichment."
+  },
+  {
+    "question": "Compare the differences between Parallelization and orchestration-worker workflow.",
+    "expected_route": "compare",
+    "expected_pages": [13],
+    "answerable": true,
+    "reference": "Parallelization divides tasks into independent processes that run simultaneously, reducing latency and improving throughput, while orchestration-worker features a central orchestrator model that dynamically breaks tasks into subtasks, assigns them to specialized worker models and compiles the result."
+  },
+  {
+    "question": "Compare the Key features and advantages of Single Agentic RAG against Multi-Agentic RAG.",
+    "expected_route": "compare",
+    "expected_pages": [15,17],
+    "answerable": true,
+    "reference": "Key features of Single Agentic RAG include Centralized simplicity, Dynamic Routing, Versatility across tools and is Ideal for simpler systems. Key features for Multi-Agentic RAG are Modularity, Scalibility, Task Specialization with its advantages being that it is Efficient and versatile."
+  },
+  {
+    "question": "Compare the workflow of Adaptive Agentic RAG to the workflow of Multi-Agentic RAG.",
+    "expected_route": "compare",
+    "expected_pages": [21,17],
+    "answerable": true,
+    "reference": "In a Multi-Agent RAG the Retrieval Router Agent sends the query to different Retrieval Agents before giving an output, whereas in a Adaptive Agentic RAG, the retrieve node sends the request through a graph node, which decides if the document is relevant or no before ever giving an output to the query."
+  },
+  {
+    "question": "Compare the difference between Langchain and Langgraph",
+    "expected_route": "compare",
+    "expected_pages": [31],
+    "answerable": true,
+    "reference": "Langchain provides modular components for building RAG pipelines, seamlessly integrating retrievers, generators and external tools, while langgraph compliments this bny integrating graph-based workflows that supports loops, persistence and human in the loop interference."
+  },
+  {
+    "question": "What is the capital of france?",
+    "expected_route": "qa",
+    "expected_pages": [],
+    "answerable": false,
+    "reference": "Answer not found in the indexed papers."
+  },
+  {
+    "question": "What is the weather in France right now?",
+    "expected_route": "qa",
+    "expected_pages": [],
+    "answerable": false,
+    "reference": "Answer not found in the indexed papers."
+  },
+  {
+    "question": "Who is the current prime minister of India",
+    "expected_route": "qa",
+    "expected_pages": [],
+    "answerable": false,
+    "reference": "Answer not found in the indexed papers."
+  },
+  {
+    "question": "What is the name of the cursed technique of sukuna?",
+    "expected_route": "qa",
+    "expected_pages": [],
+    "answerable": false,
+    "reference": "Answer not found in the indexed papers."
+  },
+  {
+    "question": "What is the capital of Pakistan?",
+    "expected_route": "qa",
+    "expected_pages": [],
+    "answerable": false,
+    "reference": "Answer not found in the indexed papers."
+  }
+]
