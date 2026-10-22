@@ -50,5 +50,3 @@ col.add(
     ids=ids,
     metadatas=metadatas,
 )
-print(metadatas(0))
-print(metadatas(50))
