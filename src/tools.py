@@ -13,7 +13,7 @@ CHROMA_PATH = Path(__file__).resolve().parent.parent / "chromadb"
 COLLECTION_NAME = "rag_docs"
 EMBED_MODEL = "nomic-embed-text"
 RERANK_MODEL = "BAAI/bge-reranker-v2-m3"
-MIN_RERANK_SCORE = None  # set AFTER calibrating with check 3f; None = never refuse
+MIN_RERANK_SCORE = None  
 
 col = chromadb.PersistentClient(path=str(CHROMA_PATH)).get_collection(COLLECTION_NAME)
 
@@ -116,7 +116,7 @@ def _get_reranker() -> CrossEncoder:
     """Load lazily: the model is large, so only pay for it when first used."""
     global _reranker
     if _reranker is None:
-        _reranker = CrossEncoder(RERANK_MODEL, max_length=256)  # drop max_length if your version rejects it
+        _reranker = CrossEncoder(RERANK_MODEL, max_length=256) 
     return _reranker
 
 
