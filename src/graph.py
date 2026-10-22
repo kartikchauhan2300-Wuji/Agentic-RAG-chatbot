@@ -100,7 +100,7 @@ def retrieve_node(state: GraphState):
 
 def grade_node(state: GraphState):
     chunks = state.get("chunks", [])
-    if not chunks:  # nothing cleared the reranker threshold
+    if not chunks: 
         return {"relevant": False}
     if not use_llm_grader:
         return {"relevant": True}
@@ -113,7 +113,7 @@ Question: {state['question']}
 Passages:
 {passages}"""
     grade = _safe(grader_llm, prompt)
-    # if the grader itself fails, trust the reranker (chunks already passed its threshold)
+  
     return {"relevant": (grade.binary_score == "yes") if grade else True}
 
 
@@ -137,7 +137,7 @@ Last query: {state['query']}"""
     return {"query": new_query or state["question"], "retries": state.get("retries", 0) + 1}
 
 
-# ---------- nodes: final answers ----------
+
 def answer_node(state: GraphState):
     chunks = state["chunks"]
     prompt = f"""Answer the question using ONLY the passages below.
@@ -153,7 +153,7 @@ Question: {state['question']}"""
 
 
 def extract_node(state: GraphState):
-    # NOTE: one chunk, as in the validated Stage 2 test. Facts spread across chunks will be missed.
+   
     chunk = state["chunks"][0]
     prompt = f"""Extract the following specific facts from this text. Pay particular
 attention to naming the dataset explicitly if one is mentioned by name
@@ -195,7 +195,7 @@ def not_enough_papers_node(state: GraphState):
     }
 
 
-# ---------- nodes: comparison (orchestrator-worker) ----------
+
 def compare_worker(state: WorkerState):
     chunks = tools.retrieve_chunks(state["question"], source=state["source"], top_n=2)
     if not chunks:
@@ -210,7 +210,7 @@ Passages:
 Question: {state['question']}"""
         finding = llm.invoke(prompt).content.strip()
         page = chunks[0]["page"]
-    # source and page are filled by code, not by the model
+  
     entry = ComparisonEntry(source=state["source"], finding=finding, page=page)
     return {"comparison_entries": [entry.model_dump()]}
 
@@ -222,7 +222,7 @@ def route_question(state: GraphState):
 
 Question: {state['question']}"""
     decision = _safe(router_llm, prompt)
-    route = decision.route if decision else "qa"   # safe default if the call fails
+    route = decision.route if decision else "qa"   
     return {"route": route, "query": state["question"], "retries": 0}
 
 def dispatch_route(state: GraphState):
@@ -231,7 +231,7 @@ def dispatch_route(state: GraphState):
             Send("compare_worker", {"question": state["question"], "source": s})
             for s in list_sources()
         ]
-    return "retrieve"   # qa, extract, and compare-with-one-paper
+    return "retrieve"  
 
 def synthesize_node(state: GraphState):
     entries = state["comparison_entries"]
@@ -257,7 +257,7 @@ Findings:
     }
 
 
-# ---------- build the graph ----------
+
 builder = StateGraph(GraphState)
 
 builder.add_node("route_question", route_question)
@@ -279,7 +279,7 @@ builder.add_edge("retrieve", "grade")
 builder.add_conditional_edges(
     "grade", decide_after_grade, ["rewrite", "give_up", "answer", "extract"]
 )
-builder.add_edge("rewrite", "retrieve")  # the capped retry loop
+builder.add_edge("rewrite", "retrieve")  
 builder.add_edge("answer", END)
 builder.add_edge("extract", END)
 builder.add_edge("give_up", END)
@@ -318,37 +318,4 @@ def route_question(state: GraphState):
     decision = _safe(router_llm, prompt)
     route = decision.route if decision else "qa"  # safe default if the call fails
     return {"route": route, "query": state["question"], "retries": 0}
-
-if __name__ == "__main__":
-    # Each check can take minutes on CPU. Comment out the ones you are not running.
-    Q = "What are the core components of RAG?"
-    OFF = "What is the capital of France?"
-
-    # 4a: router — edit the expected labels; run twice; aim for 5/6 and the same label both times
-    router_tests = [
-        ("What are vector databases?", "qa"), ("What is Agentic RAG?", "qa"),
-        ("What is the method required in an Agentic RAG pipeline?", "extract"), ("On what pages are use cases about RAG given?", "extract"),
-        ("Compare the methods given in this paper with other sources", "compare"), ("Compare the difference between info about Naive RAG from this data and other sources", "compare"),
-    ]
-    for q, expected in router_tests:
-        got = [route_question({"question": q})["route"] for _ in range(2)]
-        print("4a", "OK " if got == [expected, expected] else "BAD", expected, got, "|", q[:50])
-
-    # 4b: grader — relevant text should be yes, junk should be no
-    print("4b relevant:", grade_node({"question": Q, "chunks": [{"text": "Agentic RAG employs iterative refinement and adaptive retrieval strategies to address complex, real-time and multi-domain queries."}]}))
-    print("4b junk    :", grade_node({"question": Q, "chunks": [{"text": "meow"}]}))
-
-    # 4c: rewrite — non-empty, different from the original, same meaning
-    print("4c:", rewrite_node({"question": Q, "query": Q, "retries": 0}))
-
-    # 4d: retry cap — must END with the 'couldn't find' answer, never HIT RECURSION LIMIT
-    trace(OFF)
-    print("4d answer:", ask(OFF)["answer"])
-
-    # 4e: full QA path — fact present, citation page/heading match the PDF
-    trace(Q)
-    print("4e answer:", ask(Q)["answer"])
-
-    # 4g: compare with one paper indexed — should say it needs two, not crash
-    print("4g:", ask("Compare the methods of the indexed papers")["answer"])
 
