@@ -18,7 +18,7 @@ MIN_RERANK_SCORE = None  # set AFTER calibrating with check 3f; None = never ref
 col = chromadb.PersistentClient(path=str(CHROMA_PATH)).get_collection(COLLECTION_NAME)
 
 
-# ---------- step 1-2: embedding + vector search (already tested) ----------
+
 def embed_query(query: str) -> list[float]:
     """Embed a question using the SAME call as ingestion."""
     return ollama.embeddings(model=EMBED_MODEL, prompt=query)["embedding"]
@@ -42,12 +42,12 @@ def vector_search(query: str, k: int = 10, where: dict | None = None) -> list[di
             "page": meta.get("page"),
             "heading": meta.get("heading"),
             "source": meta.get("source"),
-            "distance": dist,  # cosine distance: LOWER = closer match
+            "distance": dist,
         })
     return chunks
 
 
-# ---------- step 3: keyword search (BM25) ----------
+
 _bm25 = None
 _corpus: list[dict] = []
 
@@ -85,7 +85,7 @@ def bm25_search(query: str, k: int = 10, source: str | None = None) -> list[dict
     hits = []
     for idx in scores.argsort()[::-1]:
         if scores[idx] <= 0:
-            break  # sorted descending: everything after this has no word match
+            break  
         chunk = _corpus[idx]
         if source and chunk["source"] != source:
             continue
@@ -95,7 +95,7 @@ def bm25_search(query: str, k: int = 10, source: str | None = None) -> list[dict
     return hits
 
 
-# ---------- step 4: merge (reciprocal rank fusion) ----------
+
 def merge(vector_hits: list[dict], keyword_hits: list[dict], k: int = 10, rrf_k: int = 60) -> list[dict]:
     """Combine two ranked lists by RANK position (their raw scores are not comparable)."""
     fused: dict[str, float] = {}
@@ -108,7 +108,7 @@ def merge(vector_hits: list[dict], keyword_hits: list[dict], k: int = 10, rrf_k:
     return [{**by_id[i], "rrf": round(fused[i], 5)} for i in best_ids]
 
 
-# ---------- step 5: rerank (CrossEncoder) ----------
+
 _reranker = None
 
 
@@ -129,7 +129,7 @@ def rerank(query: str, chunks: list[dict], top_n: int = 4) -> list[dict]:
     return [{**chunk, "rerank": float(score)} for chunk, score in ranked]
 
 
-# ---------- steps 1-7 composed ----------
+
 def retrieve_chunks(
     query: str,
     source: str | None = None,
@@ -149,7 +149,7 @@ def retrieve_chunks(
     return top
 
 
-# ---------- what the model sees ----------
+
 def format_chunks(chunks: list[dict]) -> str:
     if not chunks:
         return "No relevant passages found in the papers."
@@ -166,36 +166,6 @@ def retrieve(query: str) -> str:
     return format_chunks(retrieve_chunks(query))
 
 
-# ---------- sanity checks (run: python src/tools.py) ----------
-if __name__ == "__main__":
-    import time
 
-    Q = "What are the core components of RAG?"        # a question whose answer you can find in the PDF
-    RARE = "Core"       # an exact term or acronym that appears in the paper
-    OFF = "recipe for pancakes"
 
-    print("count:", col.count(), "| bm25 corpus:", len(_corpus))
-
-    # 3c: metadata filter — every page printed must be 5
-    print("3c pages:", [h["page"] for h in vector_search(Q, k=5, where={"page": 5})])
-
-    # 3d: BM25 — top hit should literally contain the term
-    kw = bm25_search(RARE, k=3)
-    print("3d top hit contains term:", bool(kw) and RARE.lower() in kw[0]["text"].lower())
-
-    # 3e: merge — ids unique, length <= 10
-    merged = merge(vector_search(Q, k=10), bm25_search(Q, k=10), k=10)
-    ids = [m["id"] for m in merged]
-    print("3e unique ids:", len(ids) == len(set(ids)), "| length:", len(ids))
-
-    # 3f: rerank — first run includes model load time; compare the SECOND run's time
-    for label, q in (("relevant", Q), ("off-topic", OFF)):
-        cands = merge(vector_search(q, k=10), bm25_search(q, k=10), k=10)
-        t = time.time()
-        top = rerank(q, cands, top_n=4)
-        print(f"3f {label}: {time.time() - t:.1f}s |", [round(c["rerank"], 3) for c in top])
-
-    # 3g: the tool — set MIN_RERANK_SCORE from 3f, then OFF should return the 'no passages' message
-    print("3g tool:", retrieve.name)
-    print(retrieve.invoke({"query": Q})[:600])
-    print("3g off-topic:", retrieve.invoke({"query": OFF})[:200])
+  
