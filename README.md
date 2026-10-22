@@ -19,7 +19,7 @@ So the reason for me choosing caching and not other methods such as tightening t
 Then coming on the eval results, they came back very positive too
 As seen there are vector hits and bm25 search for questions that are answerable and most of the time the rerank score is very close to the ideal range (majority being 0.8-1), though it is seen that the pipeline is not doing that well in extract type questions, something which i saw too when running the questions myself, will strive to improve this as well.
 
-This whole project is written mostly by Claude except for the dataset used to evaluate the pipeline, i wrote that myself looking at the data on which this pipeline is based upon. 
+This whole project is written mostly by Claude except for the dataset used to evaluate the pipeline, i wrote that myself looking at the data on which this pipeline is based upon. Also, I can comfortably explain each and every node present in this pipeline.
 
 SO IF MOST OF THE PROJECT IS WRITTEN BY CLAUDE THEN WHAT DID I DO?
 1. Wrote the dataset.
@@ -47,6 +47,14 @@ For ingestion it was
 print (metadatas(0))
 print (metadatas(50))
 And the answer came back to 19.7
+
+**SOURCES USED FOR REFERENCE AND UNDERSTANDING THE LOGIC BEHIND THE SYSTEM**
+https://docs.langchain.com/oss/python/langgraph/workflows-agents
+https://docs.langchain.com/oss/python/langgraph/agentic-rag#create-a-retriever-tool
+https://docling-project.github.io/docling/concepts/chunking/#hybrid-chunker****
+And various other documentation of the tools used in this, Such as FastApi, BM25, etc.
+
+
 
 So that is it, for my next projects some key takeaways are improving the latency without trading off the answer quality, incorporate semantic and embedding cache in the workflow too, maybe improve the dataset by making it bigger as well.
 
